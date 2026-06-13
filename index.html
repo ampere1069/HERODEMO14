@@ -1,0 +1,324 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071311">
+<title>POLAR MEMORY | Clean Gallery V46</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+:root {
+  --ink: #f4f1e8;
+  --night: #071311;
+  --mint: #a8ffd8;
+  --ice: #bfe8ff;
+  --violet: #c7b5ff;
+  --line: rgba(244,241,232,.34);
+  --pad: clamp(22px, 4vw, 64px);
+  --serif: "Bodoni 72", "Bodoni MT", Didot, "Times New Roman", serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; min-height: 100%; margin: 0; }
+body {
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--night);
+  font-family: var(--sans);
+}
+button { font: inherit; }
+.stage {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--night);
+}
+.media, .camera, .media video, .ambient-light, .veil {
+  position: absolute;
+  inset: 0;
+}
+.media { z-index: 0; overflow: hidden; }
+.camera { inset: -3%; will-change: transform; }
+.media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  filter: saturate(.72) contrast(1.04) brightness(.62);
+}
+.ambient-light {
+  z-index: 1;
+  pointer-events: none;
+  opacity: .42;
+  background:
+    radial-gradient(ellipse 38% 45% at 78% 18%, rgba(117,255,211,.24), transparent 72%),
+    radial-gradient(ellipse 44% 52% at 18% 82%, rgba(135,167,255,.16), transparent 74%);
+  mix-blend-mode: screen;
+}
+.veil {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(4,13,12,.78) 0%, rgba(4,13,12,.23) 48%, rgba(4,13,12,.44) 100%),
+    linear-gradient(180deg, rgba(4,13,12,.24), transparent 35%, rgba(4,13,12,.58));
+}
+.frame {
+  position: absolute;
+  inset: clamp(14px, 1.8vw, 28px);
+  z-index: 3;
+  border: 1px solid var(--line);
+  pointer-events: none;
+}
+.frame::before,
+.frame::after {
+  content: "";
+  position: absolute;
+  background: var(--line);
+}
+.frame::before { top: 72px; left: 0; right: 0; height: 1px; }
+.frame::after { top: 0; bottom: 0; right: clamp(78px, 8vw, 126px); width: 1px; }
+.masthead {
+  position: absolute;
+  top: clamp(14px, 1.8vw, 28px);
+  left: clamp(14px, 1.8vw, 28px);
+  right: clamp(14px, 1.8vw, 28px);
+  z-index: 5;
+  min-height: 72px;
+  padding: 0 clamp(14px, 2vw, 30px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.wordmark, .coordinates, .index, .edition {
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.wordmark { font-weight: 700; }
+.coordinates { opacity: .7; text-align: right; }
+.hero {
+  position: relative;
+  z-index: 4;
+  min-height: 100dvh;
+  padding: 126px calc(var(--pad) + clamp(14px, 1.8vw, 28px)) 52px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 28vw);
+  align-items: end;
+  gap: clamp(24px, 5vw, 86px);
+}
+.copy {
+  align-self: center;
+  max-width: min(880px, 70vw);
+}
+.eyebrow {
+  margin: 0 0 clamp(18px, 3vh, 34px);
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  opacity: .76;
+}
+.title {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(76px, 12.5vw, 210px);
+  line-height: .73;
+  letter-spacing: -.065em;
+}
+.title span { display: block; }
+.title .italic {
+  margin-left: .42em;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244,241,232,.88);
+}
+.statement {
+  width: min(430px, 72vw);
+  margin: clamp(30px, 5vh, 58px) 0 0;
+  padding-left: 22px;
+  border-left: 1px solid var(--mint);
+  font-size: clamp(14px, 1.3vw, 18px);
+  line-height: 1.55;
+  letter-spacing: .035em;
+}
+.side {
+  align-self: end;
+  padding: 0 clamp(24px, 3vw, 50px) 4px 0;
+}
+.side-rule { height: 1px; background: var(--line); margin-bottom: 22px; }
+.side h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(26px, 3vw, 46px);
+  font-weight: 400;
+  line-height: 1;
+}
+.side p {
+  margin: 18px 0 30px;
+  max-width: 30ch;
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: .7;
+}
+.control {
+  min-width: 152px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(244,241,232,.62);
+  border-radius: 0;
+  color: var(--ink);
+  background: rgba(7,19,17,.24);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transition: color .2s ease, background .2s ease, transform .2s ease;
+}
+.control:hover { color: var(--night); background: var(--ink); }
+.control:active { transform: scale(.97); }
+.control:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
+.index {
+  position: absolute;
+  z-index: 5;
+  right: clamp(34px, 4vw, 70px);
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center;
+  white-space: nowrap;
+  opacity: .64;
+}
+.edition {
+  position: absolute;
+  z-index: 5;
+  left: calc(var(--pad) + clamp(14px, 1.8vw, 28px));
+  bottom: clamp(24px, 3vw, 48px);
+  opacity: .58;
+}
+@media (max-width: 760px) {
+  .frame::after, .coordinates, .index { display: none; }
+  .masthead { min-height: 64px; }
+  .frame::before { top: 64px; }
+  .hero {
+    padding: 110px 34px 32px;
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 30px;
+  }
+  .copy { max-width: none; }
+  .title { font-size: clamp(70px, 24vw, 104px); line-height: .78; }
+  .title .italic { margin-left: .1em; }
+  .statement { width: min(310px, 86vw); margin-top: 34px; font-size: 14px; }
+  .side { padding: 0; align-self: auto; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end; }
+  .side-rule, .side p { display: none; }
+  .side h2 { font-size: 25px; }
+  .control { min-width: 128px; min-height: 46px; padding: 0 14px; }
+  .edition { left: 34px; bottom: 22px; font-size: 8px; }
+  .media video { object-position: 55% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camera { transform: none !important; }
+}
+</style>
+</head>
+<body>
+<main class="stage" aria-label="Polar Memory aurora presentation hero">
+  <div class="media" aria-hidden="true">
+    <div class="camera">
+      <video id="hero-video" autoplay muted loop playsinline preload="auto">
+        <source src="./assets/hero-v45-bg.mp4" type="video/mp4">
+        <source src="https://i.urusai.cc/toDvB.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="ambient-light" aria-hidden="true"></div>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <div class="wordmark">Polar Memory</div>
+    <div class="coordinates">69°39'N / Light Study 045</div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="copy">
+      <p class="eyebrow">A living study of northern light</p>
+      <h1 class="title" id="hero-title">
+        <span>After</span>
+        <span class="italic">Silence</span>
+      </h1>
+      <p class="statement">當夜色退去，光不再照亮事物，而是重新定義空間。</p>
+    </div>
+    <aside class="side" aria-label="Video controls">
+      <div class="side-rule"></div>
+      <h2>Silence holds the frame.</h2>
+      <p>The moving image remains unobstructed, held only by restrained ambient light.</p>
+      <button class="control" id="motion-toggle" type="button" aria-label="暫停影片" aria-pressed="true">Pause film</button>
+    </aside>
+  </section>
+
+  <div class="index" aria-hidden="true">Edition 046 / Polar Moving Image Study</div>
+  <div class="edition" aria-hidden="true">Film + ambient light / 2026</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var video = document.getElementById('hero-video');
+  var toggle = document.getElementById('motion-toggle');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pausedByUser = false;
+  var animations = [];
+
+  video.muted = true;
+
+  function playVideo() {
+    if (!pausedByUser) video.play().catch(function () {});
+  }
+  playVideo();
+  video.addEventListener('loadedmetadata', playVideo, { once: true });
+
+  toggle.addEventListener('click', function () {
+    if (video.paused) {
+      pausedByUser = false;
+      video.play().catch(function () {});
+      animations.forEach(function (item) { item.resume(); });
+      toggle.textContent = 'Pause film';
+      toggle.setAttribute('aria-label', '暫停影片');
+      toggle.setAttribute('aria-pressed', 'true');
+    } else {
+      pausedByUser = true;
+      video.pause();
+      animations.forEach(function (item) { item.pause(); });
+      toggle.textContent = 'Play film';
+      toggle.setAttribute('aria-label', '播放影片');
+      toggle.setAttribute('aria-pressed', 'false');
+    }
+  });
+
+  if (typeof window.gsap === 'undefined' || reduced) return;
+  var mobile = window.matchMedia('(max-width: 760px)').matches;
+  video.playbackRate = mobile ? 1 : 1.06;
+
+  var intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  intro
+    .fromTo('.wordmark, .coordinates', { y: -10, autoAlpha: .25 }, { y: 0, autoAlpha: 1, duration: .65, stagger: .08 }, 0)
+    .fromTo('.eyebrow', { y: 12, autoAlpha: .2 }, { y: 0, autoAlpha: 1, duration: .65 }, .15)
+    .fromTo('.title span', { yPercent: 16, autoAlpha: .25 }, { yPercent: 0, autoAlpha: 1, duration: 1.05, stagger: .12 }, .2)
+    .fromTo('.statement', { x: -18, autoAlpha: .2 }, { x: 0, autoAlpha: 1, duration: .72 }, .7)
+    .fromTo('.side', { y: 20, autoAlpha: .15 }, { y: 0, autoAlpha: 1, duration: .78 }, .72)
+    .fromTo('.edition, .index', { autoAlpha: 0 }, { autoAlpha: .64, duration: .6 }, .94);
+  animations.push(intro);
+
+  var camera = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine.inOut' } });
+  camera.to('.camera', { scale: 1.045, xPercent: -1.2, yPercent: .8, duration: 10 });
+  animations.push(camera);
+}());
+</script>
+</body>
+</html>
